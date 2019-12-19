@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Microsoft documentation for VCXPROJ file format is located at -->
+  <!-- the following URL. The documentation leaves a lot to be desired. -->
+  <!-- https://msdn.microsoft.com/en-us/library/2208a1f2.aspx -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_MT|Win32">
+      <Configuration>Debug_MT</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <!-- Microsoft documentation clearly shows the Global property group -->
+  <!-- preceeds the import of Cpp.Default.props and Cpp.props -->
+  <!-- https://msdn.microsoft.com/en-us/library/2208a1f2.aspx -->
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{c39f4b46-6e89-4074-902e-ca57073044d2}</ProjectGuid>
+    <RootNamespace>cryptlib</RootNamespace>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <!-- Use DefaultPlatformToolset after Microsoft.Cpp.Default.props -->
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <!-- Set DefaultPlatformToolset to v100 (VS2010) if not defined -->
+  <PropertyGroup Label="EmptyDefaultPlatformToolset">
+    <DefaultPlatformToolset Condition=" '$(DefaultPlatformToolset)' == '' ">v100</DefaultPlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="PlatformToolset">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug_MT|Win32'">
+    <Import Project="..\props\cpp.language.props" />
+    <Import Project="..\props\out.lib.props" />
+    <Import Project="..\props\runtime.static.debug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <!-- End of Visual Studio boilerplate -->
+  <!-- All Configurations -->
+  <PropertyGroup Label="All Configurations">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <TargetName>cryptlib</TargetName>
+    <TargetExt>.lib</TargetExt>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <!-- Intermediate and Output directories -->
+  <!-- Cryptlib and Cryptest need extra care due to Non-DLL/DLL configs -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Release'" Label="Non-DLL Directories">
+  </PropertyGroup>
+  <!-- All Configurations -->
+  <ItemDefinitionGroup Label="All Configurations">
+    <ClCompile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ErrorReporting>None</ErrorReporting>
+      <WarningLevel>Level4</WarningLevel>
+      <DisableSpecificWarnings>4231; 4251; 4275; 4355; 4505</DisableSpecificWarnings>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Lib>
+      <ErrorReporting>NoErrorReport</ErrorReporting>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- Debug Configurations -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='DLL-Import Debug'" Label="Debug Configuration">
+    <ClCompile>
+      <PreprocessorDefinitions>USE_PRECOMPILED_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <!-- Release Configurations -->
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='DLL-Import Release'" Label="Release Configuration">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;USE_PRECOMPILED_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <!-- DLL-Import Overrides for Preprocessor -->
+  <!-- X86 Configurations -->
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'" Label="X86 Configuration">
+    <ClCompile>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+    </Lib>
+  </ItemDefinitionGroup>
+  <!-- X64 Configurations -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_MT|Win32'">
+    <ClCompile />
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <!-- Original File with special treatment -->
+  <!-- Source Files -->
+  <!-- The order of the first three matters -->
+  <ItemGroup>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cryptlib.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cpu.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\integer.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\3way.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\adler32.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\algebra.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\algparam.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\allocate.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\arc4.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\aria.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\aria_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ariatab.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\asn.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\authenc.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\base32.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\base64.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\basecode.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\bfinit.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\blake2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\blake2s_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\blake2b_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\blowfish.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\blumshub.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\camellia.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cast.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\casts.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cbcmac.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ccm.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\chacha.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\chacha_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\chacha_avx.cpp">
+      <!-- Requires Visual Studio 2013 and above -->
+      <ExcludedFromBuild Condition=" '$(PlatformToolset)' == 'v100' Or '$(PlatformToolset)' == 'v110' ">true</ExcludedFromBuild>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\chachapoly.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cham.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cham_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\channels.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\cmac.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\crc.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\crc_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\darn.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\default.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\des.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\dessp.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\dh.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\dh2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\dll.cpp">
+      <PrecompiledHeader />
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\donna_32.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\donna_64.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\donna_sse.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\dsa.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\eax.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ec2n.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\eccrypto.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ecp.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\elgamal.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\emsa2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\eprecomp.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\esign.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\files.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\filters.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\fips140.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\fipstest.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gcm.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gcm_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gf256.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gf2_32.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gf2n.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gf2n_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gfpcrypt.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gost.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\gzip.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hc128.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hc256.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hex.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hight.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hmac.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\hrtimer.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ida.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\idea.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\iterhash.cpp">
+      <PrecompiledHeader />
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\kalyna.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\kalynatab.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\keccak.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\keccak_core.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\keccak_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\lea.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\lea_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\luc.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\mars.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\marss.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\md2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\md4.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\md5.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\misc.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\modes.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\mqueue.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\mqv.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\nbtheory.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\oaep.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\osrng.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\padlkrng.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\panama.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\pkcspad.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\poly1305.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\polynomi.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\pssr.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\pubkey.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\queue.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rabin.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\randpool.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rabbit.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rc2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rc5.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rc6.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rdrand.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rdtables.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rijndael.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rijndael_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ripemd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rng.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rsa.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\rw.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\safer.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\salsa.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\scrypt.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\seal.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\seed.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\serpent.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sha.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sha_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sha3.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\shacal2.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\shacal2_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\shake.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\shark.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sharkbox.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simeck.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simeck_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simon.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simon64_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simon128_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\simple.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\skipjack.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sm3.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sm4.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sm4_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sosemanuk.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\speck.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\speck64_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\speck128_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\square.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\squaretb.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\sse_simd.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\strciphr.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\tea.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\tftables.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\threefish.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\tiger.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\tigertab.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\ttmac.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\tweetnacl.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\twofish.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\vmac.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\wake.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\whrlpool.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\xed25519.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\xtr.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\xtrcrypt.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\xts.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\zdeflate.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\zinflate.cpp" />
+    <ClCompile Include="$(SolutionDir)\repositories\cryptopp\zlib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SolutionDir)\repositories\cryptopp\adhoc.cpp.proto" />
+    <None Include="$(SolutionDir)\repositories\cryptopp\Doxyfile" />
+    <None Include="$(SolutionDir)\repositories\cryptopp\GNUmakefile" />
+    <None Include="$(SolutionDir)\repositories\cryptopp\License.txt" />
+    <None Include="$(SolutionDir)\repositories\cryptopp\Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Condition="'$(Platform)'=='Win32'" Include="$(SolutionDir)\repositories\cryptopp\rdrand.asm">
+      <Message>Building and assembling rdrand.asm</Message>
+      <Command>ml.exe /c /nologo /D_M_X86 /W3 /Cx /Zi /safeseh /Fo"$(IntDir)rdrand-x86.obj" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)\rdrand-x86.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Condition="'$(Platform)'=='x64' AND ('$(Configuration)'=='Debug' Or '$(Configuration)'=='Release')" Include="$(SolutionDir)\repositories\cryptopp\x64dll.asm">
+      <Message>Building and assembling x64dll.asm</Message>
+      <Command>ml64.exe /c /nologo /D_M_X64 /W3 /Zi /Fo"$(IntDir)x64dll.obj" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)x64dll.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\3way.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\adler32.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\adv_simd.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\aes.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\algebra.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\algparam.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\allocate.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\arc4.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\aria.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\argnames.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\asn.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\authenc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\base32.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\base64.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\basecode.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\blake2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\blowfish.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\blumshub.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\camellia.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cast.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cbcmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ccm.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\chacha.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\chachapoly.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cham.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\channels.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_align.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_asm.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_cpu.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_cxx.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_dll.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_int.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_misc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_ns.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_os.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\config_ver.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cpu.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\crc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\cryptlib.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\darn.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\default.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\des.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\dh.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\dh2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\dmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\drbg.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\donna.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\donna_32.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\donna_64.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\donna_sse.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\dsa.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\eax.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ec2n.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\eccrypto.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ecp.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ecpoint.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\elgamal.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\emsa2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\eprecomp.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\esign.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\files.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\filters.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\fips140.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\fhmqv.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\fltrimpl.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gcm.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gf256.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gf2_32.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gf2n.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gfpcrypt.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gost.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\gzip.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hc128.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hc256.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hex.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hight.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hkdf.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hmqv.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\hrtimer.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ida.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\idea.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\integer.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\iterhash.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\kalyna.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\keccak.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\lubyrack.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\lea.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\luc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\mars.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\md2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\md4.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\md5.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\mdc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\misc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\modarith.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\modes.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\modexppc.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\mqueue.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\mqv.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\naclite.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\nbtheory.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\nr.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\oaep.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\oids.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\osrng.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\padlkrng.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\panama.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\pch.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\pkcspad.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\poly1305.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\polynomi.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\pssr.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\pubkey.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\pwdbased.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\queue.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rabin.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\randpool.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rabbit.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rc2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rc5.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rc6.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rdrand.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rijndael.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ripemd.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rng.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rsa.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\rw.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\safer.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\salsa.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\scrypt.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\seal.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\secblock.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\secblockfwd.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\seckey.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\seed.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\serpent.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\sha.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\sha3.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\shacal2.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\shake.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\shark.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\simple.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\simeck.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\simon.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\siphash.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\skipjack.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\sm3.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\sm4.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\smartptr.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\sosemanuk.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\speck.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\square.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\stdcpp.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\strciphr.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\tea.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\threefish.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\tiger.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\trap.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\trunhash.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\ttmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\tweetnacl.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\twofish.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\vmac.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\wake.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\whrlpool.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\words.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\xed25519.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\xtr.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\xtrcrypt.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\xts.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\zdeflate.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\zinflate.h" />
+    <ClInclude Include="$(SolutionDir)\repositories\cryptopp\zlib.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
